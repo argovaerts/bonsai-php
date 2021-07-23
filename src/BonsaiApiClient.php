@@ -6,8 +6,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Message;
 use Composer\CaBundle\CaBundle;
 use GuzzleHttp\Exception\GuzzleException;
+use Bonsai\Api\Endpoint\BonsaiCancelTransaction;
 use Bonsai\Api\Endpoint\BonsaiCreateTransaction;
 use Bonsai\Api\Endpoint\BonsaiEndpointInterface;
+use Bonsai\Api\Endpoint\BonsaiVerifyTransaction;
 
 class BonsaiApiClient
 {
@@ -65,12 +67,15 @@ class BonsaiApiClient
      * @return type
      * @throws conditon
      **/
-    public function __construct($api_key, $profile_id, $is_test = false) {
-        $this->api_key = $api_key;
-        $this->profile_id = $profile_id;
-        $this->is_test = $is_test;
+    public function __construct($api_key, $profile_id, $transaction_id = null, $is_test = false) {
+        $this->api_key              = $api_key;
+        $this->profile_id           = $profile_id;
+        $this->is_test              = $is_test;
 
-        $this->create_transaction = new \Bonsai\Api\Endpoint\BonsaiCreateTransaction($this);
+        $this->create_transaction   = new BonsaiCreateTransaction($this);
+        $this->verify_transaction   = new BonsaiVerifyTransaction($this, $transaction_id);
+        $this->cancel_transaction   = new BonsaiCancelTransaction($this, $transaction_id);
+        $this->cancel_all           = new BonsaiCancelAll($this);
 
         $this->guzzle_client = new Client([
             'base_uri'  => ($is_test ? self::TEST_API_ENDPOINT : self::API_ENDPOINT),

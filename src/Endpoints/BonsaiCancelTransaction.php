@@ -7,7 +7,7 @@ use Bonsai\Api\BonsaiApiClient;
 /**
  * undocumented class
  */
-class BonsaiCreateTransaction extends AbstractBonsaiEndpoint
+class BonsaiCancelTransaction implements BonsaiEndpointInterface
 {
     /**
      * undocumented function summary
@@ -18,10 +18,10 @@ class BonsaiCreateTransaction extends AbstractBonsaiEndpoint
      * @return type
      * @throws conditon
      **/
-    public function __construct(BonsaiApiClient $api_client) {
-        $this->method = BonsaiApiClient::HTTP_POST;
-        $this->endpoint = '';
-        $this->expected_status_code = 201;
+    public function __construct(BonsaiApiClient $api_client, $transaction_id) {
+        $this->method = BonsaiApiClient::HTTP_DELETE;
+        $this->endpoint = '/' . $transaction_id;
+        $this->expected_status_code = 204;
         $this->api_client = $api_client;
     }
 }
