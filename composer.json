@@ -1,0 +1,31 @@
+{
+    "name": "argovaerts/bonsai-php",
+    "description": "Bonsai API client library for PHP. Bonsai is a Belgian payment app that for every ten payments plants a tree.",
+    "keywords": [
+        "bonsai",
+        "payment",
+        "service",
+        "api",
+        "payments",
+        "gateway",
+        "charges"
+    ],
+    "type": "library",
+    "license": "BlueOak-1.0.0",
+    "authors": [
+        {
+            "name": "Arne Govaerts",
+            "email": "arne@q4.re"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.6",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "composer/ca-bundle": "^1.1",
+        "guzzlehttp/guzzle": "^6.3 || ^7.0"
+    },
+    "require-dev": {}
+}
