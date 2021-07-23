@@ -65,7 +65,7 @@ class BonsaiApiClient
         $this->profile_id = $profile_id;
         $this->is_test = $is_test;
 
-        $this->create_transaction = new BonsaiCreateTransaction();
+        $this->create_transaction = new BonsaiCreateTransaction($this);
 
         $this->guzzle_client = new Client([
             'base_uri'  => ($is_test ? self::TEST_API_ENDPOINT : self::API_ENDPOINT);,

@@ -9,5 +9,5 @@ interface BonsaiEndpointInterface
     public function getEndpoint();
     public function getExpectedStatusCode();
     public function getExpectedErrorCode();
-    public function build();
+    public function perform();
 }
