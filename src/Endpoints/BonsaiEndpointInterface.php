@@ -8,6 +8,5 @@ interface BonsaiEndpointInterface
     public function getMessage();
     public function getEndpoint();
     public function getExpectedStatusCode();
-    public function getExpectedErrorCode();
-    public function perform();
+    public function perform(array $message);
 }

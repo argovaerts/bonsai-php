@@ -20,7 +20,8 @@
     ],
     "autoload": {
         "psr-4": {
-          "Bonsai\\Api\\": "src/"
+          "Bonsai\\Api\\": "src/",
+          "Bonsai\\Api\\Endpoint\\": "src/endpoints/"
         }
     },
     "require": {

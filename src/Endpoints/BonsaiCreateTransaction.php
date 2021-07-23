@@ -22,9 +22,6 @@ class BonsaiCreateTransaction implements BonsaiEndpointInterface
     protected $expected_status_code = null;
 
     /** @var Type $var description */
-    protected $error_status_code = null;
-
-    /** @var Type $var description */
     protected $api_client = null;
 
     /**
@@ -36,11 +33,10 @@ class BonsaiCreateTransaction implements BonsaiEndpointInterface
      * @return type
      * @throws conditon
      **/
-    public function __construct($api_client) {
+    public function __construct(BonsaiApiClient $api_client) {
         $this->method = BonsaiApiClient::HTTP_POST;
         $this->endpoint = '';
         $this->expected_status_code = 201;
-        $this->error_status_code = 400;
         $this->api_client = $api_client;
     }
 
@@ -53,10 +49,10 @@ class BonsaiCreateTransaction implements BonsaiEndpointInterface
      * @return type
      * @throws conditon
      **/
-    public function perform($message)
+    public function perform(array $message)
     {
         $this->message = $message;
-        $this->api_client->perform($this);
+        return $this->api_client->perform($this);
     }
 
     /**
@@ -113,19 +109,5 @@ class BonsaiCreateTransaction implements BonsaiEndpointInterface
     public function getExpectedStatusCode()
     {
         return $this->expected_status_code;
-    }
-
-    /**
-     * undocumented function summary
-     *
-     * Undocumented function long description
-     *
-     * @param Type $var Description
-     * @return type
-     * @throws conditon
-     **/
-    public function getExpectedErrorCode()
-    {
-        return $this->error_status_code;
     }
 }

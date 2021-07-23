@@ -2,7 +2,12 @@
 
 namespace Bonsai\Api;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Message;
 use Composer\CaBundle\CaBundle;
+use GuzzleHttp\Exception\GuzzleException;
+use Bonsai\Api\Endpoint\BonsaiCreateTransaction;
+use Bonsai\Api\Endpoint\BonsaiEndpointInterface;
 
 class BonsaiApiClient
 {
@@ -65,10 +70,10 @@ class BonsaiApiClient
         $this->profile_id = $profile_id;
         $this->is_test = $is_test;
 
-        $this->create_transaction = new BonsaiCreateTransaction($this);
+        $this->create_transaction = new \Bonsai\Api\Endpoint\BonsaiCreateTransaction($this);
 
         $this->guzzle_client = new Client([
-            'base_uri'  => ($is_test ? self::TEST_API_ENDPOINT : self::API_ENDPOINT);,
+            'base_uri'  => ($is_test ? self::TEST_API_ENDPOINT : self::API_ENDPOINT),
             'timeout'   => 2,
             'verify'    => CaBundle::getSystemCaRootBundlePath(),
             'headers'   => [
@@ -93,32 +98,40 @@ class BonsaiApiClient
         $message['apiKey'] = $this->api_key;
         $message['profileID'] = $this->profile_id;
 
-        $response = $this->guzzle_client->request(
-            $endpoint->getMethod(),
-            $endpoint->getEndpoint(),
-            [
-                'json' =>$message,
-            ]
-        );
+        try {
+            $response = $this->guzzle_client->request(
+                $endpoint->getMethod(),
+                $endpoint->getEndpoint(),
+                [
+                    'json' => $message,
+                ]
+            );
 
-        $status_code = $response->getStatusCode()
-        if($status_code == $endpoint->getExpectedStatusCode()) {
-            $body = $response->getBody();
-            $res = json_decode((string) $body);
+            $status_code = $response->getStatusCode();
+            if($status_code == $endpoint->getExpectedStatusCode()) {
+                $body = $response->getBody();
+                $res = json_decode((string) $body);
 
-            if(isset($res->paymentURL)) {
-                $res->paymentURL = $res->paymentURL . '?env=pre';
+                if(isset($res->paymentURL)) {
+                    $res->paymentURL = $res->paymentURL . ($this->is_test ? '?env=pre' : '');
+                }
+
+                return $res;
+            } else {
+                return [
+                    'meta' => [
+                        'error'         => true,
+                        'code'          => $status_code, 
+                        'error_type'    => $response->getReasonPhrase(),
+                    ],
+                ];
             }
-
-            return $res;
-        } elseif ($status_code == $endpoint->getExpectedErrorCode()) {
-            $body = $response->getBody();
-            return json_decode((string) $body);
-        } else {
+        } catch (GuzzleException $e) {
             return [
                 'meta' => [
-                    'code'          => $status_code, 
-                    'error_type'    => $response->getReasonPhrase(),
+                    'error'         => true,
+                    'request'       => Message::toString($e->getRequest()),
+                    'response'      => $e->hasResponse() ? Message::toString($e->getResponse()) : null,
                 ],
             ];
         }
