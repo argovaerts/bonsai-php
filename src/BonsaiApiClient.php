@@ -28,16 +28,16 @@ class BonsaiApiClient
     const HTTP_DELETE = 'DELETE';
 
     /** @var Type $var description */
-    protected $create_transaction = null;
+    public $create_transaction = null;
 
     /** @var Type $var description */
-    protected $verify_transaction = null;
+    public $verify_transaction = null;
 
     /** @var Type $var description */
-    protected $cancel_transaction = null;
+    public $cancel_transaction = null;
 
     /** @var Type $var description */
-    protected $cancal_all = null;
+    public $cancal_all = null;
 
     /** @var Type $var description */
     protected $guzzle_client = null;
