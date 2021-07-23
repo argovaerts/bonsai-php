@@ -48,6 +48,9 @@ class BonsaiApiClient
     /** @var Type $var description */
     protected $profile_id = null;
 
+    /** @var Type $var description */
+    protected $is_test = false;
+
     /**
      * undocumented function summary
      *
@@ -57,14 +60,15 @@ class BonsaiApiClient
      * @return type
      * @throws conditon
      **/
-    public function __construct($api_key, $profile_id, $isTest = false) {
+    public function __construct($api_key, $profile_id, $is_test = false) {
         $this->api_key = $api_key;
         $this->profile_id = $profile_id;
+        $this->is_test = $is_test;
 
         $this->create_transaction = new BonsaiCreateTransaction();
 
         $this->guzzle_client = new Client([
-            'base_uri'  => ($isTest ? self::TEST_API_ENDPOINT : self::API_ENDPOINT);,
+            'base_uri'  => ($is_test ? self::TEST_API_ENDPOINT : self::API_ENDPOINT);,
             'timeout'   => 2,
             'verify'    => CaBundle::getSystemCaRootBundlePath(),
             'headers'   => [
@@ -100,7 +104,13 @@ class BonsaiApiClient
         $status_code = $response->getStatusCode()
         if($status_code == $endpoint->getExpectedStatusCode()) {
             $body = $response->getBody();
-            return json_decode((string) $body);
+            $res = json_decode((string) $body);
+
+            if(isset($res->paymentURL)) {
+                $res->paymentURL = $res->paymentURL . '?env=pre';
+            }
+
+            return $res;
         } elseif ($status_code == $endpoint->getExpectedErrorCode()) {
             $body = $response->getBody();
             return json_decode((string) $body);
